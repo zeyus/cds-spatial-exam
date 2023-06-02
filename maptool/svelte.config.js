@@ -19,7 +19,7 @@ const config = {
 			strict: true
 		  }),
 		paths: {
-			base: '/cds-spatial-exam',
+			base: '',
 		},
 		output: {
 			preloadStrategy: 'preload-mjs',
