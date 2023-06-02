@@ -23,7 +23,11 @@ const config = {
 		},
 		output: {
 			preloadStrategy: 'preload-mjs',
-	  	}
+	  	},
+		routes: {
+			include: ['/*'],
+			exclude: ['<all>']
+		}
 	}
 };
 
