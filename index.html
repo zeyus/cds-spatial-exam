@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="/favicon.png" />
+		<link rel="stylesheet" href="/global.css" />
+		<meta name="viewport" content="width=device-width" />
+		
+		<link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/entry/start.4bbb64ce.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/chunks/index.4a257f54.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/chunks/singletons.3fd58b20.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/chunks/index.3fb470c3.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/entry/app.25bb17e2.mjs">
+		<link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/chunks/preload-helper.41c905a7.mjs">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">
+			<script>
+				{
+					__sveltekit_lxgt8b = {
+						base: "",
+						env: {}
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/_app/immutable/entry/start.4bbb64ce.mjs"),
+						import("/_app/immutable/entry/app.25bb17e2.mjs")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>
