@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-cloudflare';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -19,7 +19,7 @@ const config = {
 			strict: true
 		  }),
 		paths: {
-			base: '',
+			base: '/cds-spatial-exam',
 		},
 		output: {
 			preloadStrategy: 'preload-mjs',
