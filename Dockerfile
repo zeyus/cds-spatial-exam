@@ -3,6 +3,7 @@ FROM node:current-alpine as build
 
 RUN apk update && apk upgrade && \
     adduser -D svelteuser
+RUN mkdir -p /usr/src/app && chown -R svelteuser:svelteuser /usr/src/app
 USER svelteuser
 
 WORKDIR /usr/src/app
@@ -17,6 +18,7 @@ FROM node:current-alpine
 RUN apk update && apk upgrade && \
     apk add dumb-init && \
     adduser -D svelteuser
+RUN mkdir -p /app && chown -R svelteuser:svelteuser /app
 USER svelteuser
 
 WORKDIR /app
