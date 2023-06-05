@@ -1,10 +1,20 @@
-<script>
+<script lang="ts">
     import { pageName } from '$lib/stores.js'
-  
-    $: title = $pageName ? `${$pageName} | 🗺️ maptool 🌍` : '🗺️ maptool 🌍'
-  
+    import { onMount } from "svelte";
+    import { PUBLIC_SITE_NAME } from '$env/static/public';
+
+    const siteTitle = PUBLIC_SITE_NAME;
+    let mounted = false;
+    $: title = $pageName ? `${$pageName} | ${siteTitle}` : siteTitle;
+
+    onMount(() => {
+      mounted = true;
+    });
+
     $: {
-      document.title = title
+      if (mounted) {
+        document.title = title;
+      }
     }
   </script>
   

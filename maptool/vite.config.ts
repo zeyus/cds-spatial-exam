@@ -6,7 +6,16 @@ export default defineConfig({
 	server: {
 		fs: {
 		  // Allow serving files from one level up to the project root
-		  allow: ['../static', '../static/*', '../static/images', '../static/images/*'],
+		  allow: [
+			'../static',
+			'../static/*',
+			'../static/images',
+			'../static/images/*',
+			'../static/data',
+			'../static/data/*',
+			'../static/data/processed',
+			'../static/data/processed/*',
+		  ],
 		},
 	  },
 });

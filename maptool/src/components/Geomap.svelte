@@ -2,6 +2,18 @@
     import L, { type LatLngExpression, type MapOptions } from 'leaflet';
     import 'leaflet/dist/leaflet.css';
 
+    // Define marker data type
+    type Marker = {
+        lat: number,
+        lng: number,
+        label: string,
+        description: string,
+        date: string,
+        category: string,
+    };
+
+    export let markers: Array<Marker>;
+
     // Set initial map view location
     const initialView: LatLngExpression = {
         lat: 56.172808,
@@ -30,6 +42,11 @@
     let map: L.Map | null = null;
     function mapAction(container: HTMLElement) {
         map = createMap(container); 
+        if (markers) {
+            markers.forEach(marker => {
+                createMarker(marker).addTo(map!);
+            });
+        }
         return {
         destroy: () => {
                 if (map) {
@@ -44,6 +61,14 @@
     function resizeMap() {
         if(map) { map.invalidateSize(); }
     }
+
+    function createMarker(marker: Marker) {
+        let m = L.marker([marker.lat, marker.lng]);
+        m.bindPopup(`<b>${marker.label}</b><br>${marker.description}<br>${marker.date}<br>${marker.category}`);
+        return m;
+    }
+
+
 
 </script>
 <svelte:window on:resize={resizeMap} />
