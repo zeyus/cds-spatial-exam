@@ -28,6 +28,7 @@ COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/package.json .
 COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/package-lock.json .
 COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/.env .
+COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/data ./data
 
 EXPOSE 8080
 
