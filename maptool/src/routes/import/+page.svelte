@@ -1,5 +1,5 @@
-<script lang="ts">
-    import { pageName } from '$lib/stores.js'
+<!-- <script lang="ts">
+    import { pageName } from '$root/lib/stores.js'
     import { enhance } from '$app/forms';
 
     pageName.set("Import data");
@@ -21,4 +21,15 @@
     </div>
 
     <button type="submit">Submit</button>
-</form>
+</form> -->
+
+<script lang="ts">
+    import { onMount } from "svelte";
+    import { pageName } from '$root/lib/stores.js';
+    export let data;
+    pageName.set("Import data");
+    
+    onMount(async () => {
+        console.log(data);
+    });
+</script>

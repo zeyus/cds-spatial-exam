@@ -1,6 +1,6 @@
 <script lang="ts">
     import { PUBLIC_SITE_NAME } from '$env/static/public';
-    import { pageName } from '$lib/stores.js'
+    import { pageName } from '$root/lib/stores.js'
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
     import IconButton from '@smui/icon-button';
     import Select, { Option } from '@smui/select';

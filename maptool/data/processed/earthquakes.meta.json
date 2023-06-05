@@ -1,0 +1,1 @@
+{"name":"Earthquakes","slug":"earthquakes","description":"Earthquakes from 1965 to 2016","hasCategory":true,"hasLabel":false,"init":{"lat":0,"lng":0,"zoom":2},"hasIntensity":true,"hasRadius":true,"hasDate":true,"hasDescription":false}

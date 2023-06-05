@@ -91,12 +91,17 @@ Required data columns:
 
 - `latitude` - The latitude of the data point, in decimal degrees.
 - `longitude` - The longitude of the data point, in decimal degrees.
-- `label` - The label of the data point, which will be displayed on the map.
 
 Optional data columns:
 
+- `label` - The label of the data point, which will be displayed on the map.
+- `description` - The description of the data point, which will be displayed on the map.
+- `category` - The category of the data point, which can be used for filtering or display.
 - `radius` - The radius of the data point, in kilometers. If this column is not present, the data point will be displayed as a marker on the map.
 - `intensity` - The intensity of the data point, which will be displayed as a color on the map. Intensity should be contain values between 0 and 1. If the values are outside of this range, they will be normalized to fit within this range.
+- `date` - If a date column is used, it can be used to filter the data points by date. The date column should be in the format `YYYY-MM-DD`.
+
+Note: The column names do not have to match the ones specified above, but the data must conform to the specified format.
 
 ## Development
 

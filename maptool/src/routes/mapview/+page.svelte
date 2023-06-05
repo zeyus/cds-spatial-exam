@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import type { ComponentType } from "svelte";
-    import { pageName } from '$lib/stores.js'
+    import { pageName } from '$root/lib/stores.js'
 
     pageName.set("Map View");
 
