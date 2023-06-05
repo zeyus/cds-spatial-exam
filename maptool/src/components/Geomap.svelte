@@ -63,7 +63,13 @@
     }
 
     function createMarker(marker: Marker) {
-        let m = L.marker([marker.lat, marker.lng]);
+        let icon = L.icon({
+            iconUrl: '/marker-icon.png',
+        });
+        let markOpts: L.MarkerOptions = {
+            icon: icon,
+        };
+        let m = L.marker([marker.lat, marker.lng], markOpts);
         m.bindPopup(`<b>${marker.label}</b><br>${marker.description}<br>${marker.date}<br>${marker.category}`);
         return m;
     }

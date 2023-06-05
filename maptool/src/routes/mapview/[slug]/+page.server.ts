@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 // we need to handle non-existing files
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'path';
 
 export function load({ params }) {
