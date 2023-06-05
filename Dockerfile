@@ -5,9 +5,9 @@ RUN apk update && apk upgrade && \
     adduser -D svelteuser
 USER svelteuser
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY --chown=svelteuser:svelteuser maptool/ /app
+COPY --chown=svelteuser:svelteuser maptool/ /usr/src/app
 
 RUN npm install && \
     npm run build
@@ -21,11 +21,11 @@ USER svelteuser
 
 WORKDIR /app
 
-COPY --chown=svelteuser:svelteuser --from=build /app/build .
-COPY --chown=svelteuser:svelteuser --from=build /app/package.json .
-COPY --chown=svelteuser:svelteuser --from=build /app/package-lock.json .
-COPY --chown=svelteuser:svelteuser --from=build /app/node_modules ./node_modules
-COPY --chown=svelteuser:svelteuser --from=build /app/.env .
+COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/build .
+COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/package.json .
+COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/package-lock.json .
+COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/.env .
 
 EXPOSE 8080
 
