@@ -26,10 +26,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { pageName } from '$root/lib/stores.js';
-    export let data;
+    // export let data;
     pageName.set("Import data");
     
     onMount(async () => {
-        console.log(data);
+        console.log("onMount");
     });
 </script>
+
+Coming soon...

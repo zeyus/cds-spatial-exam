@@ -2,24 +2,56 @@
     import { PUBLIC_SITE_NAME } from '$env/static/public';
     import { pageName } from '$root/lib/stores.js'
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
-    import IconButton from '@smui/icon-button';
+    import IconButton, { Icon } from '@smui/icon-button';
     import Select, { Option } from '@smui/select';
-    import Button, { Group, Label } from '@smui/button';
     import { page } from '$app/stores';
+    import Drawer, {
+      Content,
+      Header,
+      Title as DrawerTitle,
+      Subtitle,
+    } from '@smui/drawer';
+    import {
+      goto,
+    } from '$app/navigation';
+    import List, { Item, Text } from '@smui/list';
 
     $: menuTitle = $pageName != "" ? `${$pageName}` : PUBLIC_SITE_NAME;
     // List of navigation items
     const navItems = [
-      { label: "View", href: "/mapview" },
-      { label: "Import", href: "/import" },
+      { label: "Home", href: "/", icon: "home" },
+      { label: "View", href: "/mapview", icon: "map" },
+      { label: "Import", href: "/import", icon: "cloud_upload" },
+      { label: "Reset", href: "/reset", icon: "refresh" },
     ];
-
-    console.log($page.route.id)
   
-    let fruits = ['Apple', 'Orange', 'Banana', 'Mango'];
+    let maps = [
+      { label: "Earthquakes", slug: "earthquakes" },
+      { label: "Something Else", slug: "something-else" },
+    ];
+    let open = false;
   </script>
   
-
+  <Drawer variant="dismissible" bind:open>
+    <Header>
+      <IconButton class="material-icons with-space-after" on:click={() => (open = false)}>close</IconButton>
+      <DrawerTitle href="/">{PUBLIC_SITE_NAME}</DrawerTitle>
+      <Subtitle>Visualize your data.</Subtitle>
+    </Header>
+    <Content>
+      <List>
+        {#each navItems as item}
+          <Item
+            href="{item.href}"
+            activated={(item.href === "/" && $page.route.id === "/") || (item.href !== "/" && $page.route.id?.startsWith(item.href))}
+          >
+            <span class="icon-gap"><Icon class="material-icons">{item.icon}</Icon></span>
+            <Text>{item.label}</Text>
+          </Item>
+        {/each}
+      </List>
+    </Content>
+  </Drawer>
 <TopAppBar
   variant="static"
   dense
@@ -27,35 +59,26 @@
 >
   <Row>
     <Section align="start">
-      {#if $page.route.id === "/"}
-        <IconButton class="material-icons" href="/" color="primary" style="background-color: var(--mdc-theme-primary, #ff3e00); color: #fff;">home</IconButton>
-      {:else}
-        <IconButton class="material-icons" href="/" color="secondary">home</IconButton>
-      {/if}
-      <Group>
-        {#each navItems as item}
-          {#if $page.route.id?.startsWith(item.href)}
-            <Button href={item.href} variant="unelevated">
-              {item.label}
-            </Button>
-          {:else}
-            <Button href={item.href} variant="unelevated" color="secondary">
-              {item.label}
-            </Button>
-          {/if}
-        {/each}
-      </Group>
+      <IconButton class="material-icons" on:click={() => (open = !open)}>menu</IconButton>
     </Section>
     <Section>
       <Title>{menuTitle}</Title>
     </Section>
-    <Section align="end" toolbar>
-      <Select label="Load Map">
-        {#each fruits as fruit}
-          <Option value={fruit}>{fruit}</Option>
-        {/each}
-      </Select>
-      <IconButton class="material-icons" aria-label="GitHub" href="https://github.com/zeyus/cds-spatial-exam">code</IconButton>
-    </Section>
+    {#if $page.route.id?.startsWith("/mapview")}
+      <Section align="end" toolbar>
+        <Select label="Load Map" on:SMUISelect:change={(e) => goto(`/mapview/${e.detail.value}`)}>
+          <Option value={null} />
+          {#each maps as map}
+            <Option value={map.slug}>{map.label}</Option>
+          {/each}
+        </Select>
+        <IconButton class="material-icons" aria-label="GitHub" href="https://github.com/zeyus/cds-spatial-exam">code</IconButton>
+      </Section>
+    {/if}
   </Row>
 </TopAppBar>
+<style>
+  .icon-gap {
+    margin-right: 0.5rem;
+  }
+</style>
