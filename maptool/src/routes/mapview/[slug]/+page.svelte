@@ -3,7 +3,7 @@
     import type { ComponentType } from "svelte";
     import { pageName } from '$root/lib/stores.js';
     export let data;
-    pageName.set("Map View");
+    pageName.set(`Map View: ${data["mapdata"]["meta"]["slug"]}`);
     
     let Geomap: ComponentType;
     // Geomap component needs to be loaded asynchronously

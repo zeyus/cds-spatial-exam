@@ -154,6 +154,7 @@ async function* streamTransformCsv(parser: Parser, colmap: MapDataColumnIndex, m
     // we can ignore the header
     let header = true;
     let firstRow = true;
+    
     // row by row we can stream the transformed data to the output stream
     yield '[';
     for await (const chunk of parser) {
@@ -172,6 +173,8 @@ async function* streamTransformCsv(parser: Parser, colmap: MapDataColumnIndex, m
             }
             /* @ts-ignore */
             row[k] = chunk[v];
+            // update the metadata
+            updateMeta(meta, k, chunk[v]);
         }
         yield (firstRow ? '' : ',') + JSON.stringify(row);
         firstRow = false;
@@ -205,6 +208,51 @@ export async function loadMapMeta(slug: string): Promise<MapData> {
     }
 }
 
+function resetMeta(meta: MapData): MapData {
+    meta['dateRange'] = { min: undefined, max: undefined};
+    meta['intensityRange'] = { min: Infinity, max: -Infinity, scalefactor: 1.0 };
+    meta['radiusRange'] = { min: Infinity, max: -Infinity };
+    meta['categories'] = [];
+    return meta;
+}
+
+
+function updateMeta(meta: MapData, key: string, value: any): MapData {
+    switch (key) {
+        case 'date':
+            if (meta.dateRange.min === undefined || value < meta.dateRange.min) {
+                meta.dateRange.min = value;
+            }
+            if (meta.dateRange.max === undefined || value > meta.dateRange.max) {
+                meta.dateRange.max = value;
+            }
+            break;
+        case 'intensity':
+            if (value < meta.intensityRange.min) {
+                meta.intensityRange.min = value;
+            }
+            if (value > meta.intensityRange.max) {
+                meta.intensityRange.max = value;
+            }
+            break;
+        case 'radius':
+            if (value < meta.radiusRange.min) {
+                meta.radiusRange.min = value;
+            }
+            if (value > meta.radiusRange.max) {
+                meta.radiusRange.max = value;
+            }
+            break;
+        case 'category':
+            if (!meta.categories.includes(value)) {
+                meta.categories.push(value);
+            }
+            break;
+    }
+    return meta;
+}
+
+
 
 /**
  * @description Transform a CSV file into a list of map data.
@@ -213,9 +261,6 @@ export async function loadMapMeta(slug: string): Promise<MapData> {
  * @returns {Promise<void>} A promise that resolves when the transformation is complete.
  */
 export async function transformCsv(filename: string, colmap: MapDataColumnIndex, meta: MapData): Promise<void> {
-    // first write the metadata
-    await writeMapMeta(meta, filename);
-
     // preprare and load parser
     const options = parserConfig(true, castMapDataPOI(colmap));
     const parser = await loadCsvParser(filename, options);
@@ -226,6 +271,8 @@ export async function transformCsv(filename: string, colmap: MapDataColumnIndex,
     // create the output stream
     const outdata = createWriteStream(mapdatafile, 'utf-8');
 
+    // reset the metadata
+    meta = resetMeta(meta);
     // transform the data
     const iterator = streamTransformCsv(parser, colmap, meta);
 
@@ -237,7 +284,9 @@ export async function transformCsv(filename: string, colmap: MapDataColumnIndex,
 
     // wait for the output stream to finish
     return new Promise<void>((resolve, reject) => {
-        outdata.on('finish', () => {
+        outdata.on('finish', async () => {
+            // write the metadata
+            await writeMapMeta(meta, filename);
             resolve();
         });
         outdata.on('error', (err) => {

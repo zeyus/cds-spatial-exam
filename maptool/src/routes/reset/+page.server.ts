@@ -1,36 +1,11 @@
-// import { redirect, fail } from '@sveltejs/kit';
-// import type { Actions } from './$types';
-// import path from 'path';
-// import os from 'os';
-// import fs from 'fs';
-// import Busboy from '@fastify/busboy';
-
-// export const actions: Actions = {
-//   default: async ({ request, route, url }) => {
-//     if (request.method === 'POST') {
-//         const busboy = new Busboy({ headers: request.headers });
-//         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-//             let saveTo = path.join('static/data', path.basename(fieldname));
-//             file.pipe(fs.createWriteStream(saveTo));
-//         });
-//         busboy.on('finish', () => {
-//             console.log('Upload complete');
-//             redirect(301, '/import');
-//         });
-//         return request.pipe(busboy);
-//     }
-// };
-// };
-
-import { getCsvHeader, transformCsv } from '$lib/server/mapdata';
+import { transformCsv } from '$lib/server/mapdata';
 import type { MapData, MapDataColumnIndex } from '$root/lib/types.js';
 import { join } from 'node:path';
 
-export async function load({ params }) {
-    const filename = join(process.cwd(), 'data', 'earthquakes.csv');
 
-    const header = await getCsvHeader(filename);
-    //console.log(header);
+export async function load({ params }) {
+    
+    const filename = join(process.cwd(), 'data', 'earthquakes.csv');
 
     const meta: MapData = {
         name: 'Earthquakes',
@@ -73,12 +48,17 @@ export async function load({ params }) {
         label: undefined,
         description: undefined,
     };
-
-    await transformCsv(filename, colmap, meta);
-
+    console.log('transforming csv');
+    
     return {
-        props: {
-            header
+        streamed: {
+            imported: new Promise<boolean>((resolve, reject) => {
+                transformCsv(filename, colmap, meta).then(() => {
+                    resolve(true);
+                }).catch((err) => {
+                    reject(err);
+                });
+            }),
         }
     };
     

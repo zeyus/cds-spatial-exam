@@ -2,3 +2,20 @@ html, body {
     height: 100%;
     margin: 0;
 }
+.page-content {
+    padding: 0 2rem;
+}
+
+.mdc-select.mdc-menu-surface--anchor {
+    position: absolute;
+    top: 0;
+    right: 48px;
+    height: 48px;
+}
+.mdc-deprecated-list {
+    position: unset;
+}
+.smui-select--standard .mdc-select__anchor {
+    height: 48px;
+    line-height: 48px;
+}

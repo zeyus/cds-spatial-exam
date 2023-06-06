@@ -12,13 +12,6 @@
 <div class="flexy">
     <div class="page-container">
         <Nav />
-        <div class="page-content">
-            <slot />
-        </div>
+        <slot />
     </div>
 </div>
-<style>
-    .page-content {
-        height: calc(100vh - 48px);
-    }
-  </style>

@@ -28,6 +28,24 @@ interface MapData {
     hasIntensity: boolean;
     // Do the map points have a date?
     hasDate: boolean;
+    // Category names.
+    categories: string[] | undefined;
+    // date range
+    dateRange: {
+        min: Date | undefined,
+        max: Date | undefined,
+    };
+    // intensity range
+    intensityRange: {
+        min: number | undefined,
+        max: number | undefined,
+        scalefactor: number | undefined,
+    };
+    // radius range
+    radiusRange: {
+        min: number | undefined,
+        max: number | undefined,
+    };
 }
 
 // Define marker data type

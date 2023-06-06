@@ -1,12 +1,14 @@
 <script lang="ts">
-    import type { MapDataPOI } from '$lib/types';
+    import type { MapData, MapDataPOI } from '$lib/types';
     import L, { type LatLngExpression, type MapOptions } from 'leaflet';
     import 'leaflet.markercluster';
     import 'leaflet/dist/leaflet.css';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
+
     export let markers: Array<MapDataPOI>;
+    export let metadata: MapData;
 
     // Set initial map view location
     const initialView: LatLngExpression = {
@@ -42,7 +44,7 @@
 
     const mapOptions: MapOptions = {
         zoomControl: true,
-        attributionControl: false,
+        attributionControl: true,
         center: initialView,
         zoom: 10,
         preferCanvas: true,
@@ -50,6 +52,22 @@
 
     // Create map
     function createMap(container: HTMLElement) {
+        if (metadata) {
+            if (metadata.init) {
+                mapOptions.center = [metadata.init.lat, metadata.init.lng];
+                mapOptions.zoom = metadata.init.zoom;
+            }
+            if (metadata.hasDate) {
+                // mapOptions.timeDimension = true;
+                // mapOptions.timeDimensionControl = true;
+                // mapOptions.timeDimensionControlOptions = {
+                //     limitSliders: true,
+                // };
+                // // mapOptions.timeDimensionOptions = {
+                    
+                // // };
+            }
+        }
         let m = L.map(container, mapOptions);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
