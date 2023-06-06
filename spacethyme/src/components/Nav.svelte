@@ -1,90 +1,56 @@
 <script lang="ts">
     import { PUBLIC_SITE_NAME } from '$env/static/public';
-    import { pageName } from '$root/lib/stores.js'
-    import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
-    import IconButton, { Icon } from '@smui/icon-button';
-    import Select, { Option } from '@smui/select';
+    // import { pageName } from '$root/lib/stores.js'
+    import { DarkMode } from 'flowbite-svelte';
+    import { Map, HomeModern, CloudArrowUp, ArrowPath, CodeBracket } from 'svelte-heros-v2';
+    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte'
+    import { sineIn } from 'svelte/easing';
     import { page } from '$app/stores';
-    import Drawer, {
-      Content,
-      Header,
-      Title as DrawerTitle,
-      Subtitle,
-    } from '@smui/drawer';
-    import {
-      goto,
-    } from '$app/navigation';
-    import List, { Item, Text, Separator, Subheader } from '@smui/list';
 
-    $: menuTitle = $pageName != "" ? `${$pageName}` : PUBLIC_SITE_NAME;
+    // $: menuTitle = $pageName != "" ? `${$pageName}` : PUBLIC_SITE_NAME;
     // List of navigation items
     const navItems = [
-      { label: "Home", href: "/", icon: "home" },
-      { label: "View", href: "/mapview", icon: "map" },
-      { label: "Import", href: "/import", icon: "cloud_upload" },
+      { label: "Home", href: "/", icon: HomeModern },
+      { label: "View", href: "/mapview", icon: Map },
+      { label: "Import", href: "/import", icon: CloudArrowUp },
       { label: "Danger Zone", href: "-", icon: "-" },
-      { label: "Reset", href: "/reset", icon: "refresh" },
+      { label: "Reset", href: "/reset", icon: ArrowPath },
       { label: "External", href: "-", icon: "-" },
-      { label: "GitHub", href: "https://github.com/zeyus/cds-spatial-exam", icon: "code"}
+      { label: "GitHub", href: "https://github.com/zeyus/cds-spatial-exam", icon: CodeBracket}
     ];
   
     let maps = [
       { label: "Earthquakes", slug: "earthquakes" },
       { label: "Something Else", slug: "something-else" },
     ];
-    let open = false;
+
+    let transitionParams = {
+      x: -320,
+      duration: 200,
+      easing: sineIn
+    };
   </script>
-  
-  <Drawer variant="dismissible" bind:open>
-    <Header>
-      <IconButton class="material-icons with-space-after" on:click={() => (open = false)}>close</IconButton>
-      <DrawerTitle href="/">{PUBLIC_SITE_NAME}</DrawerTitle>
-      <Subtitle>Visualize your data.</Subtitle>
-    </Header>
-    <Content>
-      <List>
-        {#each navItems as item}
-          {#if item.href === "-"}
-            <Separator />
-            <Subheader tag="h6">{item.label}</Subheader>
-          {:else}
-            <Item
-              on:click={() => (open = false)}
-              href="{item.href}"
-              activated={(item.href === "/" && $page.route.id === "/") || (item.href !== "/" && $page.route.id?.startsWith(item.href))}
-            >
-              <span class="icon-gap"><Icon class="material-icons">{item.icon}</Icon></span>
-              <Text>{item.label}</Text>
-            </Item>
-          {/if}
-        {/each}
-      </List>
-    </Content>
-  </Drawer>
-<TopAppBar
-  variant="static"
-  dense
-  color='secondary'
->
-  <Row>
-    <Section align="start">
-      <IconButton class="material-icons" on:click={() => (open = !open)}>menu</IconButton>
-      <Title>{menuTitle}</Title>
-    </Section>
-    {#if $page.route.id?.startsWith("/mapview")}
-      <Section align="end" toolbar>
-        <Select label="Load Map" on:SMUISelect:change={(e) => goto(`/mapview/${e.detail.value}`)}>
-          <Option value={null} />
-          {#each maps as map}
-            <Option value={map.slug}>{map.label}</Option>
-          {/each}
-        </Select>
-      </Section>
-    {/if}
-  </Row>
-</TopAppBar>
-<style>
-  .icon-gap {
-    margin-right: 0.5rem;
-  }
-</style>
+
+  <Navbar navClass="'px-2 sm:px-4 py-0 w-full" let:hidden let:toggle>
+    <NavBrand href="/">
+      <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+        {PUBLIC_SITE_NAME}
+      </span>
+    </NavBrand>
+    <NavHamburger on:click={toggle} />
+    <NavUl {hidden}>
+      {#each navItems as item}
+        {#if item.href === "-"}
+          <!-- <Separator />
+          <Subheader tag="h6">{item.label}</Subheader> -->
+        {:else}
+          <NavLi
+            href="{item.href}"
+            active={(item.href === "/" && $page.route.id === "/") || (item.href !== "/" && $page.route.id?.startsWith(item.href))}
+          ><span class="whitespace-nowrap"><svelte:component this="{item.icon}" size=24 role="button" />{item.label}</span>
+          </NavLi>
+        {/if}
+      {/each}
+      <DarkMode initialTheme='dark' />
+    </NavUl>
+  </Navbar>

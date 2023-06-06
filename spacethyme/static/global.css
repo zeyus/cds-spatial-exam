@@ -1,4 +1,4 @@
-html, body {
+/* html, body {
     height: 100%;
     margin: 0;
 }
@@ -18,7 +18,7 @@ html, body {
 .smui-select--standard .mdc-select__anchor {
     height: 48px;
     line-height: 48px;
-}
+} */
 
 /* .noUi-marker-horizontal.noUi-marker-large {
     height: 10px;
@@ -38,4 +38,15 @@ html, body {
 
 .noUi-tooltip.hidden {
     display: none;
+}
+:root {
+    --map-tiles-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+html.dark .map-tiles {
+    filter:var(--map-tiles-filter, none);
+}
+
+html.dark .leaflet-container {
+    background-color: rgb(17 24 39 / var(--tw-bg-opacity));
 }

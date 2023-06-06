@@ -132,7 +132,7 @@
     }
 
     function resolveMapControls(map: L.map, container: HTMLElement) {
-        if (metadata.hasDate) {
+        if (metadata !== undefined && metadata?.hasDate) {
             let Slider = L.Control.extend({
                 options: {
                     position: 'topright',
@@ -165,6 +165,7 @@
         let m = L.map(container, mapOptions);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
+            className: 'map-tiles',
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(m);
         resolveMapControls(m, container);

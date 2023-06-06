@@ -1,3 +1,4 @@
+import preprocess from 'svelte-preprocess';
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
@@ -5,7 +6,12 @@ import { vitePreprocess } from '@sveltejs/kit/vite';
 const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
-	preprocess: vitePreprocess(),
+	preprocess: [
+		vitePreprocess(),
+		preprocess({
+			postcss: true
+		})
+	],
 
 	kit: {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
@@ -21,19 +27,19 @@ const config = {
 				include: ['/*'],
 				exclude: ['<all>']
 			}
-		  }),
+		}),
 		alias: {
 			$components: './src/components',
 			$root: './src',
 			$data: './static/data',
-			$mapdata: './static/data/processed',
+			$mapdata: './static/data/processed'
 		},
 		paths: {
-			base: '',
+			base: ''
 		},
 		output: {
-			preloadStrategy: 'preload-mjs',
-	  	},
+			preloadStrategy: 'preload-mjs'
+		}
 	}
 };
 

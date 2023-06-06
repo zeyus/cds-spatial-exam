@@ -1,5 +1,5 @@
 <script lang="ts">
-    import CircularProgress from '@smui/circular-progress';
+    import { Spinner } from 'flowbite-svelte';
     import { pageName } from '$root/lib/stores.js';
     export let data;
     pageName.set("Reset Data");
@@ -14,14 +14,7 @@
 {#if !done}
     <h1>Resetting Data</h1>
     <p>All map demos are being reset to their initial state.</p>
-    <div style="display: flex; justify-content: center">
-        <CircularProgress
-            class="my-four-colors"
-            style="height: 128px; width: 128px;"
-            indeterminate
-            fourColor
-        />
-    </div>
+        <div class="text-center"><Spinner size=128 /></div>
 {:else}
     <h1>Data Reset!</h1>
     <p>You're good to go. 😄</p>

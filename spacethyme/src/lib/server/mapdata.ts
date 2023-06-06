@@ -320,3 +320,16 @@ export async function loadMapDataPOIs(slug: string): Promise<MapDataPOI[]> {
         return Promise.reject(err);
     }
 }
+
+
+export function generateSlugFromTitle(title: string, maxlen: number = 50): string {
+    // replace all non-alphanumeric characters with a dash
+    const slug = title.replace(/[^a-zA-Z0-9]/g, '-').substring(0, maxlen);
+    return slug;
+}
+
+export async function saveFormUpload(file: File, slug: string): Promise<string> {
+    const filename = join(getDataDir(), slug + '.csv');
+    await writeFile(filename, await file.text());
+    return filename;
+}

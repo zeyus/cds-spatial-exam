@@ -3,7 +3,7 @@
     import type { ComponentType } from "svelte";
     import { pageName } from '$root/lib/stores.js'
 
-    pageName.set("Map View");
+    pageName.set("🗺️");
 
     let Geomap: ComponentType;
     // Geomap component needs to be loaded asynchronously
