@@ -69,8 +69,6 @@
   <Row>
     <Section align="start">
       <IconButton class="material-icons" on:click={() => (open = !open)}>menu</IconButton>
-    </Section>
-    <Section>
       <Title>{menuTitle}</Title>
     </Section>
     {#if $page.route.id?.startsWith("/mapview")}
@@ -81,7 +79,6 @@
             <Option value={map.slug}>{map.label}</Option>
           {/each}
         </Select>
-        <IconButton class="material-icons" aria-label="GitHub" href="https://github.com/zeyus/cds-spatial-exam">code</IconButton>
       </Section>
     {/if}
   </Row>

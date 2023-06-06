@@ -3,11 +3,13 @@
     import L, { type LatLngExpression, type MapOptions } from 'leaflet';
     import noUiSlider from 'nouislider';
     import '$lib/wNumb';
-    import 'nouislider/dist/nouislider.css';
     import 'leaflet.markercluster';
+    import 'leaflet-loading';
+    import 'nouislider/dist/nouislider.css';
     import 'leaflet/dist/leaflet.css';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+    import 'leaflet-loading/src/Control.Loading.css';
 
 
     export let markers: Array<MapDataPOI> | Promise<Array<MapDataPOI>>;
@@ -51,6 +53,7 @@
         center: initialView,
         zoom: 10,
         preferCanvas: true,
+        loadingControl: true,
     };
 
     const dateRange: MapDateRange = {
@@ -58,14 +61,41 @@
         end: undefined,
     };
 
-    const markerCluster = L.markerClusterGroup();
+    let map: L.Map | null = null;
+    
+    const markerCluster = L.markerClusterGroup({
+        chunkedLoading: true,
+        chunkProgress: (processed, total, elapsed) => {
+            if (processed >= total) {
+                if (map) {
+                    map.fire('dataload');
+                }
+            }
+        },
+    });
 
-
-    function filterMarkersByDateRange(markers: Array<MapDataPOI>, meta: MapData, start: number, end: number, range: MapDateRange) {
-        if (!meta.hasDate) {
-            return markers;
+    function chunkArray(array: any[], size: number) {
+        var result = [];
+        for (let i = 0; i < array.length; i += size) {
+            result.push(array.slice(i, i + size));
         }
-        return markers.filter((marker) => {
+        return result;
+    }
+
+    async function filterAsync(array: any[], callback: any) {
+        // Split the array into smaller chunks
+        var chunks = chunkArray(array, 500); // adjust chunk size to a suitable number
+        var result: any[] = [];
+        for (let i = 0; i < chunks.length; i++) {
+            // Add a delay to allow the browser to update
+            await new Promise(resolve => setTimeout(resolve, 0));
+            result = result.concat(chunks[i].filter(callback));
+        }
+        return result;
+    }
+
+    async function filterMarkersByDateRange(markers: Array<MapDataPOI>, meta: MapData, start: number, end: number, range: MapDateRange) {
+        return await filterAsync(markers, (marker: MapDataPOI) => {
             if (marker.date) {
                 return marker.date >= start && marker.date <= end;
             } else {
@@ -77,10 +107,11 @@
     async function applyFilters(map: L.Map, meta: MapData, range: MapDateRange) {
         let filteredMarkers: Array<MapDataPOI>;
         console.log(`Filtering markers in range ${range.start} - ${range.end}`);
+        map.fire('dataloading');
         if (markers instanceof Promise) {
-            filteredMarkers = filterMarkersByDateRange(await markers, meta, range.start, range.end, range);
+            filteredMarkers = await filterMarkersByDateRange(await markers, meta, range.start, range.end, range);
         }else {
-            filteredMarkers = filterMarkersByDateRange(markers, meta, range.start, range.end, range);
+            filteredMarkers = await filterMarkersByDateRange(markers, meta, range.start, range.end, range);
         }
         console.log(filteredMarkers.length)
         addMarkers(map, filteredMarkers);
@@ -139,17 +170,25 @@
         return m;   
     }
 
-    function addMarkers(map: L.Map, markers: Array<MapDataPOI>) {
+    async function addMarkers(map: L.Map, markers: Array<MapDataPOI>) {
+        map.fire('dataloading');
         markerCluster.clearLayers()
         const mapMarkers: Array<L.Marker> = [];
-        markers.forEach(marker => {
-            mapMarkers.push(createMarker(marker));
-        });
+        // chunk array for browser performance
+        const chunks = chunkArray(markers, 500);
+        for (let i = 0; i < chunks.length; i++) {
+            // Add a delay to allow the browser to update
+            await new Promise(resolve => setTimeout(resolve, 0));
+
+            chunks[i].forEach(marker => {
+                mapMarkers.push(createMarker(marker));
+            });
+        }
+
         markerCluster.addLayers(mapMarkers, true);
     }
 
     // Handle map creation and destruction
-    let map: L.Map | null = null;
     async function mapAction(container: HTMLElement) {
         map = await createMap(container); 
         if (markers) {
@@ -251,10 +290,14 @@
             });
             slider.noUiSlider.on('change', (values, handle) => {
                 console.log(values);
-                applyFilters(map, metadata, {
-                        start: parseInt(values[0]),
-                        end: parseInt(values[1])
-                });
+                if(map) {
+                    map.fire('dataloading');
+                
+                    applyFilters(map, metadata, {
+                            start: parseInt(values[0]),
+                            end: parseInt(values[1])
+                    });
+                }
                 //startDateValues[handle].innerHTML = formatDate(+values[handle]);
                 // if (handle === 0) {
                 //     dateRange.start = new Date(parseInt(values[0]));
