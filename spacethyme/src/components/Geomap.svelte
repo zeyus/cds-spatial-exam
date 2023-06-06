@@ -141,8 +141,10 @@
                     let controlSlider = L.DomUtil.create('div', 'map-slider', container);
                     // here we can fill the slider with colors, strings and whatever
                     createSlider(controlSlider);
-                    controlSlider.style.width = '75vw';
+                    // controlSlider.style.width = '75vw';
+                    controlSlider.style.height = '75vh';
                     controlSlider.style.marginRight = '5vw';
+                    controlSlider.style.marginTop = '5vh';
                     return controlSlider;
                 },
             });
@@ -221,13 +223,17 @@
     }
 
 
-    function formatDate(date: number) {
+    function formatDate(date: number, day: boolean = true) {
 
         return new Date(date).toLocaleDateString('en-GB', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric',
+            day: day ? 'numeric' : undefined,
         });
+    }
+
+    function dateYear(date: number) {
+        return new Date(date).getFullYear();
     }
 
     function createMarker(marker: MapDataPOI) {
@@ -261,35 +267,66 @@
         if (slider) {
             noUiSlider.create(slider, {
                 behaviour: 'tap-drag',
-                direction: 'ltr',
+                direction: 'rtl',
                 start: startDateValues,
+                orientation: 'vertical',
                 connect: true,
                 range: {
                     'min': dateRange.start,
                     'max': dateRange.end,
                 },
                 step: 86400000,
-                tooltips: [true, true],
                 format: wNumb({
                     decimals: 0
                 }),
                 pips:{
                     mode: 'count',
-                    values: 5,
-                    density: 4,
+                    values: 10,
+                    density: 8,
                     stepped: true,
                     format: {
                         to: (value) => {
-                            return formatDate(value);
+                            return dateYear(value);
                         },
                         from: (value) => {
                             return Date.parse(value);
                         }
                     }
-                }
+                },
+                tooltips: [
+                    {
+                        to: (value) => {
+                            return formatDate(value, false);
+                        },
+                        from: (value) => {
+                            return Date.parse(value);
+                        }
+                    },
+                    {
+                        to: (value) => {
+                            return formatDate(value, false);
+                        },
+                        from: (value) => {
+                            return Date.parse(value);
+                        }
+                    }
+                ]
+            });
+            document.querySelectorAll('.noUi-tooltip').forEach((el) => {
+                el.classList.add('hidden');
+            });
+            slider.noUiSlider.on('start', (values, handle) => {
+                // show tooltips
+                document.querySelectorAll('.noUi-tooltip').forEach((el) => {
+                    el.classList.remove('hidden');
+                });
             });
             slider.noUiSlider.on('change', (values, handle) => {
                 console.log(values);
+                // hide tooltips
+                document.querySelectorAll('.noUi-tooltip').forEach((el) => {
+                    el.classList.add('hidden');
+                });
                 if(map) {
                     map.fire('dataloading');
                 
@@ -324,6 +361,7 @@
 		width:30px;
 		transform:translateX(-50%) translateY(-25%);
 	} */
+
 </style>
 <div id="map" style="height:100%;width:100%" use:mapAction>
 </div>

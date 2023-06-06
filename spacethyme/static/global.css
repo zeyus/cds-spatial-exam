@@ -19,3 +19,23 @@ html, body {
     height: 48px;
     line-height: 48px;
 }
+
+/* .noUi-marker-horizontal.noUi-marker-large {
+    height: 10px;
+} */
+
+.noUi-pips {
+    color: #545454;
+}
+/* flip pips from right side to left side */
+.noUi-pips.noUi-pips-vertical {
+    left: -200%;
+}
+
+.noUi-value.noUi-value-vertical.noUi-value-large {
+    transform: translate(-110%, -50%);
+}
+
+.noUi-tooltip.hidden {
+    display: none;
+}
