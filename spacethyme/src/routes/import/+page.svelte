@@ -32,23 +32,6 @@
 
         console.log("data", data);
     }
-    // $: if (form && form.body && form.body.csvHeader) {
-    //     console.log("form", data);
-    //     if (form.body.csvHeader) {
-    //         form.body.csvHeader.forEach((col: string, i: number) => {
-    //             columns.push({name: col, index: i});
-    //         });
-    //     }
-    //     if (form.body.filename) {
-    //         filename = form.body.filename;
-    //     }
-    //     if (form.body.dsname) {
-    //         dsname = form.body.dsname;
-    //     }
-    //     if (form.body.slug) {
-    //         slug = form.body.slug;
-    //     }
-    // }
 
 
 </script>
@@ -128,8 +111,21 @@
             </div>
             <Label for="dsdesc" class="pb-2">Give your dataset a brief description 😊</Label>
             <Textarea disabled={creating} id="dsdesc" name="dsdesc" placeholder="Description" />
-            <div class="text-right"><Button type="submit" class="mt-4">Next</Button></div>
+            <div class="w-full"><Button type="submit" class="mt-4">Next</Button></div>
         </form>
+        <form
+            name="newdds"
+            method="post"
+            use:enhance={() => {
+                creating = true;
+    
+                return async ({ update }) => {
+                    await update();
+                    creating = false;
+                };
+            }}
+            enctype="multipart/form-data"
+            action="?/resetstate"><Button color="alternative" type="submit" class="mt-4">Reset</Button></form>  
     {/if}
 </div>
 

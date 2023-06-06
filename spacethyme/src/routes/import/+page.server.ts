@@ -6,19 +6,30 @@ import type { MapData, MapDataColumnIndex } from '$lib/types';
 export function load({ cookies }) {
     const formstate = cookies.get('state');
     if (!formstate) {
-        return {};
+        cookies.set('state', JSON.stringify({}));
+        return {
+            state: {},
+        };
     }
-    const state = JSON.parse(formstate);
-    return {
-        state: state,
-    };
+    try {
+        const state = JSON.parse(formstate);
+        return {
+            state: state,
+        };
+    }
+    catch (err) {
+        return {
+            state: {},
+        };
+    }
 }
 
 
-    
-
-
 export const actions = {
+    resetstate: async ({ cookies }) => {
+        cookies.set('state', JSON.stringify({}));
+        throw redirect(303, '/import');
+    },
     upload: async ({ cookies, request }) => {
         const formData = await request.formData();
         const dsfile = formData.get('dssrc') as File;
@@ -46,7 +57,8 @@ export const actions = {
                 dsname: dsname,
             });
         }
-        if (dsfile.size > 10000000) {
+        // limit to 1GB
+        if (dsfile.size > 1024 * 1024 * 1024) {
             return fail(400, {
                 error: true,
                 message: 'File too large',
@@ -70,6 +82,7 @@ export const actions = {
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
         });
+        throw redirect(303, '/import');
 
     },
     configure: async ({ cookies, request }) => {
@@ -101,6 +114,7 @@ export const actions = {
         const description = formData.get('dsdesc') as string;
 
         if (!state.filename || !state.dsname || !state.slug) {
+            cookies.set('state', JSON.stringify({}));
             return fail(400, {
                 error: true,
                 message: 'Your file got lost somehow 😢',
@@ -154,9 +168,9 @@ export const actions = {
             slug: state.slug,
             description: description,
             init: { // this is a placeholder, user/map selection can be implemented later
-                lat: 0.0, 
-                lng: 0.0,
-                zoom: 10,
+                lat: 0,
+                lng: 0,
+                zoom: 2
             },
             hasLabel: colmap.label ? true : false,
             hasDescription: colmap.description ? true : false,
@@ -192,7 +206,7 @@ export const actions = {
         };
 
         const transformedCsv = await transformCsv(state.filename, colmapIndex, meta);
-
+        cookies.set('state', JSON.stringify({}));
         // now we can redirect to the map page
         throw redirect(303, `/mapview/${state.slug}`);
     },
