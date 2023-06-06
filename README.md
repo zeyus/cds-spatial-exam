@@ -12,7 +12,7 @@ It is the submission by [@zeyus](https://github.com/zeyus) and [@sashapustota](h
 
 ## Demo Version
 
-A demo version of the application is available at [https://spacethyme.zys.im/](https://spacethyme.zys.im/), this is mainly for previewing the application and the demonstration data. This server is reset at regular intervals and no uploaded data will be retained.
+A demo version of the application is available at [https://maptool.zys.im/](https://maptool.zys.im/), this is mainly for previewing the application and the demonstration data. This server is reset at regular intervals and no uploaded data will be retained.
 
 ## Installation
 
@@ -79,9 +79,6 @@ Then 🗺️ spacethyme 🌍 is available at [http://localhost:8080](http://loca
 
 Significant Earthquakes, 1965-2016, US Geological Survey License: Public Domain CC0 1.0 Universal. Obtained from Kaggle: [https://www.kaggle.com/datasets/usgs/earthquake-database](https://www.kaggle.com/datasets/usgs/earthquake-database).
 
-#### ...???
-
-...
 
 ### Custom Data
 
