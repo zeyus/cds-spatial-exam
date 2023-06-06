@@ -14,7 +14,7 @@
     import {
       goto,
     } from '$app/navigation';
-    import List, { Item, Text } from '@smui/list';
+    import List, { Item, Text, Separator, Subheader } from '@smui/list';
 
     $: menuTitle = $pageName != "" ? `${$pageName}` : PUBLIC_SITE_NAME;
     // List of navigation items
@@ -22,7 +22,10 @@
       { label: "Home", href: "/", icon: "home" },
       { label: "View", href: "/mapview", icon: "map" },
       { label: "Import", href: "/import", icon: "cloud_upload" },
+      { label: "Danger Zone", href: "-", icon: "-" },
       { label: "Reset", href: "/reset", icon: "refresh" },
+      { label: "External", href: "-", icon: "-" },
+      { label: "GitHub", href: "https://github.com/zeyus/cds-spatial-exam", icon: "code"}
     ];
   
     let maps = [
@@ -41,13 +44,19 @@
     <Content>
       <List>
         {#each navItems as item}
-          <Item
-            href="{item.href}"
-            activated={(item.href === "/" && $page.route.id === "/") || (item.href !== "/" && $page.route.id?.startsWith(item.href))}
-          >
-            <span class="icon-gap"><Icon class="material-icons">{item.icon}</Icon></span>
-            <Text>{item.label}</Text>
-          </Item>
+          {#if item.href === "-"}
+            <Separator />
+            <Subheader tag="h6">{item.label}</Subheader>
+          {:else}
+            <Item
+              on:click={() => (open = false)}
+              href="{item.href}"
+              activated={(item.href === "/" && $page.route.id === "/") || (item.href !== "/" && $page.route.id?.startsWith(item.href))}
+            >
+              <span class="icon-gap"><Icon class="material-icons">{item.icon}</Icon></span>
+              <Text>{item.label}</Text>
+            </Item>
+          {/if}
         {/each}
       </List>
     </Content>

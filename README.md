@@ -1,6 +1,6 @@
-# 🗺️ maptool 🌍
+# 🗺️ spacethyme 🌍
 
-🗺️ maptool 🌍 is a ready to deploy web application that allows you to visualize and interact with your data on a map.
+🗺️ spacethyme 🌍 is a ready to deploy web application that allows you to visualize and interact with your data on a map.
 
 It is the submission by [@zeyus](https://github.com/zeyus) and [@sashapustota](https://github.com/sashapustota) for the *Cultural Data Science - Spatial Analytics* course at Aarhus University.
 
@@ -12,7 +12,7 @@ It is the submission by [@zeyus](https://github.com/zeyus) and [@sashapustota](h
 
 ## Demo Version
 
-A demo version of the application is available at [https://maptool.zys.im/](https://maptool.zys.im/), this is mainly for previewing the application and the demonstration data. This server is reset at regular intervals and no uploaded data will be retained.
+A demo version of the application is available at [https://spacethyme.zys.im/](https://spacethyme.zys.im/), this is mainly for previewing the application and the demonstration data. This server is reset at regular intervals and no uploaded data will be retained.
 
 ## Installation
 
@@ -27,7 +27,7 @@ Once you have Docker installed, you can run the following command to start the a
 docker run -p 8080:8080 ghcr.io/zeyus/cds-spatial-exam:main
 ```
 
-Then 🗺️ maptool 🌍 is available at [http://localhost:8080](http://localhost:8080).
+Then 🗺️ spacethyme 🌍 is available at [http://localhost:8080](http://localhost:8080).
 
 ### Manual
 
@@ -43,7 +43,7 @@ cd cds-spatial-exam
 Install dependencies:
 
 ```bash
-cd maptool
+cd spacethyme
 npm install
 ```
 
@@ -68,13 +68,13 @@ cd build
 node -r dotenv/config index.js
 ```
 
-Then 🗺️ maptool 🌍 is available at [http://localhost:8080](http://localhost:8080) (or another port if you changed the `PORT` setting).
+Then 🗺️ spacethyme 🌍 is available at [http://localhost:8080](http://localhost:8080) (or another port if you changed the `PORT` setting).
 
 ## Data
 
 ### Example Data
 
-🗺️ maptool 🌍 comes with some example data to get you started.
+🗺️ spacethyme 🌍 comes with some example data to get you started.
 #### Earthquakes
 
 Significant Earthquakes, 1965-2016, US Geological Survey License: Public Domain CC0 1.0 Universal. Obtained from Kaggle: [https://www.kaggle.com/datasets/usgs/earthquake-database](https://www.kaggle.com/datasets/usgs/earthquake-database).

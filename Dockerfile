@@ -8,7 +8,7 @@ USER svelteuser
 
 WORKDIR /usr/src/app
 
-COPY --chown=svelteuser:svelteuser maptool/ /usr/src/app
+COPY --chown=svelteuser:svelteuser spacethyme/ /usr/src/app
 
 RUN npm install && \
     npm run build

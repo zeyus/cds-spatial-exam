@@ -53,7 +53,7 @@ async function loadCsvParser(filename: string, options: Options | null = null): 
 
     // create the parser
     const parser = createReadStream(filename)
-                    .pipe(parse());
+                    .pipe(parse(options));
     
     return parser;
 }
@@ -105,7 +105,7 @@ function castMapDataPOIValue(dest: string): CallableFunction {
     // we really only have 3 types of values: floats, dates, and strings
     switch (dest) {
         case 'lat':
-        case 'lon':
+        case 'lng':
         case 'intensity':
         case 'radius':
             return parseFloat;
@@ -124,7 +124,6 @@ function castMapDataPOIValue(dest: string): CallableFunction {
 function castMapDataPOI(colmap: MapDataColumnIndex): CastingFunction {
     const indices: number[] = [];
     const method: CallableFunction[] = [];
-    const keep = new Set<number>(indices);
     for (const [k, v] of Object.entries(colmap)) {
         if (v === undefined) {
             continue;
@@ -132,15 +131,18 @@ function castMapDataPOI(colmap: MapDataColumnIndex): CastingFunction {
         indices.push(v);
         method.push(castMapDataPOIValue(k));
     }
-        
-    return (value: any, context: CastingContext): any => {
+    const keep = new Set(indices);
+
+    const cast: CastingFunction = (value: any, context: CastingContext): any => {
         /* @ts-ignore */
         if (!context.header && keep.has(context.column)) {
             /* @ts-ignore */
-            return method[indices.indexOf(context.column)](value);
+            value = method[indices.indexOf(context.column)](value);
         }
         return value;
     };
+        
+    return cast;
 }
 
 /**
@@ -202,14 +204,27 @@ export async function loadMapMeta(slug: string): Promise<MapData> {
     try {
         const metafile = join(getProcessedDir(), slug + '.meta.json');
         const meta = await readFile(metafile, 'utf-8');
-        return JSON.parse(await meta);
+        const mapdata = JSON.parse(await meta);
+        if (mapdata.hasDate) {
+            mapdata.dateRange.min = parseInt(mapdata.dateRange.min);
+            mapdata.dateRange.max = parseInt(mapdata.dateRange.max);
+        }
+        if (mapdata.hasIntensity) {
+            mapdata.intensityRange.min = parseFloat(mapdata.intensityRange.min);
+            mapdata.intensityRange.max = parseFloat(mapdata.intensityRange.max);
+        }
+        if (mapdata.hasRadius) {
+            mapdata.radiusRange.min = parseFloat(mapdata.radiusRange.min);
+            mapdata.radiusRange.max = parseFloat(mapdata.radiusRange.max);
+        }
+        return mapdata;
     }  catch (err) {
         return Promise.reject(err);
     }
 }
 
 function resetMeta(meta: MapData): MapData {
-    meta['dateRange'] = { min: undefined, max: undefined};
+    meta['dateRange'] = { min: Infinity, max: -Infinity};
     meta['intensityRange'] = { min: Infinity, max: -Infinity, scalefactor: 1.0 };
     meta['radiusRange'] = { min: Infinity, max: -Infinity };
     meta['categories'] = [];
@@ -262,7 +277,8 @@ function updateMeta(meta: MapData, key: string, value: any): MapData {
  */
 export async function transformCsv(filename: string, colmap: MapDataColumnIndex, meta: MapData): Promise<void> {
     // preprare and load parser
-    const options = parserConfig(true, castMapDataPOI(colmap));
+    const cast: CastingFunction = castMapDataPOI(colmap);
+    const options = parserConfig(true, cast);
     const parser = await loadCsvParser(filename, options);
 
     // create the output filename
@@ -295,26 +311,11 @@ export async function transformCsv(filename: string, colmap: MapDataColumnIndex,
     });
 }
 
-function jsonReviver(key: string, value: any): any {
-    switch (key) {
-        case 'date':
-            return new Date(value);
-        case 'lat':
-        case 'lon':
-        case 'intensity':
-        case 'radius':
-            return parseFloat(value);
-        default:
-            return value;
-    }
-}
-
-
 export async function loadMapDataPOIs(slug: string): Promise<MapDataPOI[]> {
     const mapdatafile = join(getProcessedDir(), slug + '.json');
     try {
         const mapdata = await readFile(mapdatafile, 'utf-8');
-        return JSON.parse(await mapdata, jsonReviver);
+        return JSON.parse(await mapdata);
     } catch (err) {
         return Promise.reject(err);
     }

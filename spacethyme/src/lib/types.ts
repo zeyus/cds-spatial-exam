@@ -32,8 +32,8 @@ interface MapData {
     categories: string[] | undefined;
     // date range
     dateRange: {
-        min: Date | undefined,
-        max: Date | undefined,
+        min: number | undefined,
+        max: number | undefined,
     };
     // intensity range
     intensityRange: {
@@ -55,7 +55,7 @@ interface MapDataPOI {
     // optional
     label: string | undefined;
     description: string | undefined;
-    date: Date | undefined;
+    date: number | undefined;
     category: string | undefined;
     radius: number | undefined;
     intensity: number | undefined;
@@ -73,5 +73,9 @@ interface MapDataColumnIndex {
     intensity: number | undefined;
 };
 
+interface MapDateRange {
+    start: number | undefined;
+    end: number | undefined;
+};
 
-export type {MapData, MapDataPOI, MapDataColumnIndex};
+export type {MapData, MapDataPOI, MapDataColumnIndex, MapDateRange};
