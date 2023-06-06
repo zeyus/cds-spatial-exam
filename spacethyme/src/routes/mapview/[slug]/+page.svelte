@@ -7,8 +7,8 @@
 	import type { MapData, MapDataPOI } from "$lib/types.js";
     export let data;
 
-    console.log($page);
-    pageName.set(`Map View: hi`);
+    let slug = $page.params.slug ?? "";
+    pageName.set(`Map View: ${slug}`);
     
     let Geomap: ComponentType;
     // Geomap component needs to be loaded asynchronously
@@ -23,6 +23,9 @@
     data.streamed.meta.then((meta) => {
         metaReady = true;
         mapMeta = meta;
+        if (meta.name) {
+            pageName.set(`Map View: ${meta.name}`);
+        }
     });
     // data.streamed.pois.then((pois) => {
     //     markersReady = true;
