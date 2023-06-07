@@ -10,7 +10,7 @@ import {
     type CastingContext
 } from 'csv-parse';
 import { createReadStream, existsSync, createWriteStream } from 'node:fs';
-import { writeFile, readFile, readdir } from 'node:fs/promises';
+import { writeFile, readFile, readdir, unlink } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import type { MapData, MapDataPOI, MapDataColumnIndex } from '$lib/types';
 import { Readable } from 'node:stream';
@@ -342,4 +342,21 @@ export async function listAvailableMaps(): Promise<MapData[]> {
         return meta;
     }));
     return maps;
+}
+
+
+export async function deleteAllProcessedMaps(): Promise<void> {
+    const files = await readdir(getProcessedDir());
+    const mapfiles = files.filter((f) => f.endsWith('.json'));
+    await Promise.all(mapfiles.map(async (f) => {
+        await unlink(join(getProcessedDir(), f));
+    }));
+}
+
+export async function deleteUploadedCSVs(): Promise<void> {
+    const files = await readdir(getDataDir());
+    const mapfiles = files.filter((f) => f.endsWith('.csv') && !f.startsWith('_'));
+    await Promise.all(mapfiles.map(async (f) => {
+        await unlink(join(getDataDir(), f));
+    }));
 }

@@ -1,5 +1,5 @@
 import { redirect, fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { invalidate } from '$app/navigation';
 import { saveFormUpload, generateSlugFromTitle, getCsvHeader, transformCsv } from '$lib/server/mapdata';
 import type { MapData, MapDataColumnIndex } from '$lib/types';
 
@@ -220,6 +220,7 @@ export const actions = {
             maxAge: 60 * 60 * 24 * 7, // 1 week
         });
         // now we can redirect to the map page
+        invalidate('data:foundmaps');
         throw redirect(303, `/mapview/${state.slug}`);
     },
 

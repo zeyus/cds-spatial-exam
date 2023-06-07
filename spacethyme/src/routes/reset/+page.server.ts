@@ -1,3 +1,4 @@
+import { invalidate } from '$app/navigation';
 import { transformCsv } from '$lib/server/mapdata';
 import type { MapData, MapDataColumnIndex } from '$root/lib/types.js';
 import { join } from 'node:path';
@@ -5,7 +6,7 @@ import { join } from 'node:path';
 
 export async function load({ params }) {
     
-    const filename = join(process.cwd(), 'data', 'earthquakes.csv');
+    const filename = join(process.cwd(), 'data', '_earthquakes.csv');
 
     const meta: MapData = {
         name: 'Earthquakes',
@@ -49,7 +50,7 @@ export async function load({ params }) {
         description: undefined,
     };
     console.log('transforming csv');
-    
+    invalidate('data:foundmaps');
     return {
         streamed: {
             imported: new Promise<boolean>((resolve, reject) => {
