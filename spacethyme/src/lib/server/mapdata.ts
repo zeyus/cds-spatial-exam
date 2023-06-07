@@ -10,7 +10,7 @@ import {
     type CastingContext
 } from 'csv-parse';
 import { createReadStream, existsSync, createWriteStream } from 'node:fs';
-import { writeFile, readFile } from 'node:fs/promises';
+import { writeFile, readFile, readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import type { MapData, MapDataPOI, MapDataColumnIndex } from '$lib/types';
 import { Readable } from 'node:stream';
@@ -332,4 +332,14 @@ export async function saveFormUpload(file: File, slug: string): Promise<string> 
     const filename = join(getDataDir(), slug + '.csv');
     await writeFile(filename, await file.text());
     return filename;
+}
+
+export async function listAvailableMaps(): Promise<MapData[]> {
+    const files = await readdir(getProcessedDir());
+    const mapfiles = files.filter((f) => f.endsWith('.meta.json'));
+    const maps = await Promise.all(mapfiles.map(async (f) => {
+        const meta = await loadMapMeta(f.replace('.meta.json', ''));
+        return meta;
+    }));
+    return maps;
 }

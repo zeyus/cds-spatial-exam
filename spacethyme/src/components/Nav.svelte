@@ -2,33 +2,48 @@
     import { PUBLIC_SITE_NAME } from '$env/static/public';
     // import { pageName } from '$root/lib/stores.js'
     import { DarkMode } from 'flowbite-svelte';
-    import { Map, HomeModern, CloudArrowUp, ArrowPath, CodeBracket } from 'svelte-heros-v2';
-    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte'
-    import { sineIn } from 'svelte/easing';
+    import { Map as MapIcon, HomeModern, CloudArrowUp, ArrowPath, CodeBracket } from 'svelte-heros-v2';
+    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Dropdown, DropdownItem } from 'flowbite-svelte'
     import { page } from '$app/stores';
+	import type { MapData } from '$root/lib/types';
+    export let availableMaps;
 
     // $: menuTitle = $pageName != "" ? `${$pageName}` : PUBLIC_SITE_NAME;
     // List of navigation items
     const navItems = [
       { label: "Home", href: "/", icon: HomeModern },
-      { label: "View", href: "/mapview", icon: Map },
+      { label: "View", icon: MapIcon, id: "map-view" },
       { label: "Import", href: "/import", icon: CloudArrowUp },
-      { label: "Danger Zone", href: "-", icon: "-" },
+      // { label: "Danger Zone", href: "-", icon: "-" },
       { label: "Reset", href: "/reset", icon: ArrowPath },
-      { label: "External", href: "-", icon: "-" },
+      // { label: "External", href: "-", icon: "-" },
       { label: "GitHub", href: "https://github.com/zeyus/cds-spatial-exam", icon: CodeBracket}
     ];
-  
-    let maps = [
-      { label: "Earthquakes", slug: "earthquakes" },
-      { label: "Something Else", slug: "something-else" },
-    ];
+    let defaultMap = { label: "Earthquakes", slug: "earthquakes" };
+    let maps = [{ label: "Plain Map 🗺️", slug: "" }];
 
-    let transitionParams = {
-      x: -320,
-      duration: 200,
-      easing: sineIn
-    };
+    if (availableMaps instanceof Promise) {
+      availableMaps.then((found) => {
+        found.forEach((map: MapData) => {
+          maps.push({
+            label: map.name,
+            slug: map.slug
+          });
+        });
+        if (maps.length ===1) {
+          maps.push(defaultMap);
+        }
+      });
+    } else {
+      availableMaps.forEach((map: MapData) => {
+        maps.push({
+          label: map.name,
+          slug: map.slug
+        });
+      });
+      console.log(maps);
+    }
+
   </script>
 
   <Navbar navClass="'px-2 sm:px-4 py-0 w-full" let:hidden let:toggle>
@@ -40,9 +55,25 @@
     <NavHamburger on:click={toggle} />
     <NavUl {hidden}>
       {#each navItems as item}
-        {#if item.href === "-"}
-          <!-- <Separator />
-          <Subheader tag="h6">{item.label}</Subheader> -->
+        {#if item.href === undefined}
+          <!-- this is a dropdown for maps -->
+          <NavLi
+            active={$page.route.id?.startsWith("/mapview")}
+            id="{item.id}"
+            class="cursor-pointer">
+              <span class="whitespace-nowrap">
+                <svelte:component this="{item.icon}" size=24 role="button" />
+                {item.label}
+              </span>
+          </NavLi>
+          <Dropdown frameClass="z-50" triggeredBy="#{item.id}">
+            {#each maps as map}
+              <DropdownItem href="/mapview/{map.slug}" active={$page.params.slug === map.slug}>
+                {map.label}
+              </DropdownItem>
+            {/each}
+          </Dropdown>
+
         {:else}
           <NavLi
             href="{item.href}"
