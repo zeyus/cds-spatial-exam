@@ -32,6 +32,6 @@ COPY --chown=svelteuser:svelteuser --from=build /usr/src/app/data ./data
 
 EXPOSE 8080
 
-ENV HOST=0.0.0.0 PORT=8080 NODE_ENV=production
+ENV HOST=0.0.0.0 BODY_SIZE_LIMIT=500000000 PORT=8080 NODE_ENV=production
 
 CMD ["dumb-init","node","-r", "dotenv/config", "index.js"]

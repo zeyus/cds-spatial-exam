@@ -6,7 +6,10 @@ import type { MapData, MapDataColumnIndex } from '$lib/types';
 export function load({ cookies }) {
     const formstate = cookies.get('state');
     if (!formstate) {
-        cookies.set('state', JSON.stringify({}));
+        cookies.set('state', JSON.stringify({}), {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+        });
         return {
             state: {},
         };
@@ -27,8 +30,11 @@ export function load({ cookies }) {
 
 export const actions = {
     resetstate: async ({ cookies }) => {
-        cookies.set('state', JSON.stringify({}));
-        throw redirect(303, '/import');
+        cookies.set('state', JSON.stringify({}), {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+        });
+        throw redirect(303, '/import?step=1');
     },
     upload: async ({ cookies, request }) => {
         const formData = await request.formData();
@@ -82,7 +88,7 @@ export const actions = {
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
         });
-        throw redirect(303, '/import');
+        throw redirect(303, '/import?step=2');
 
     },
     configure: async ({ cookies, request }) => {
@@ -114,7 +120,10 @@ export const actions = {
         const description = formData.get('dsdesc') as string;
 
         if (!state.filename || !state.dsname || !state.slug) {
-            cookies.set('state', JSON.stringify({}));
+            cookies.set('state', JSON.stringify({}), {
+                path: '/',
+                maxAge: 60 * 60 * 24 * 7, // 1 week
+            });
             return fail(400, {
                 error: true,
                 message: 'Your file got lost somehow 😢',
@@ -206,7 +215,10 @@ export const actions = {
         };
 
         const transformedCsv = await transformCsv(state.filename, colmapIndex, meta);
-        cookies.set('state', JSON.stringify({}));
+        cookies.set('state', JSON.stringify({}), {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+        });
         // now we can redirect to the map page
         throw redirect(303, `/mapview/${state.slug}`);
     },

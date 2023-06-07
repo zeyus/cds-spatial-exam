@@ -39,7 +39,9 @@ const config = {
 		},
 		output: {
 			preloadStrategy: 'preload-mjs'
-		}
+		},
+		// @todo: remove this once the bug is fixed
+		csrf: false
 	}
 };
 
