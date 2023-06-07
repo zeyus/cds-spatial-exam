@@ -3,6 +3,7 @@
     import { enhance } from '$app/forms';
     import { Spinner } from 'flowbite-svelte';
     import { P, Input, Fileupload, Label, Helper, Heading, Button, Select, Textarea } from 'flowbite-svelte'
+	import { invalidate } from '$app/navigation';
     export let data;
 	export let form;
     let columns: Object[] = [];
@@ -43,7 +44,7 @@
 <div class="page-content">
     {#if creating}
     <h1>Hang tight, we're processing your data!</h1>
-        <div class="text-center"><Spinner size=128 /></div>
+        <div class="text-center"><Spinner size=64 /></div>
     {:else}
         {#if (columns.length === 0)}
             <Heading class="py-4" tag="h6">Ready to visualize your data?</Heading>
@@ -128,7 +129,8 @@
                 method="post"
                 use:enhance={() => {
                     creating = true;
-        
+                    invalidate('data:foundmaps');
+                    invalidate('/mapview');
                     return async ({ update }) => {
                         await update();
                         columns = [];

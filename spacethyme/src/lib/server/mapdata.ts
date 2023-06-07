@@ -203,8 +203,11 @@ async function writeMapMeta(meta: MapData, filename: string): Promise<void> {
 export async function loadMapMeta(slug: string): Promise<MapData> {
     try {
         const metafile = join(getProcessedDir(), slug + '.meta.json');
+        if (!existsSync(metafile)) {
+            return Promise.reject('Map metadata file does not exist.');
+        }
         const meta = await readFile(metafile, 'utf-8');
-        const mapdata = JSON.parse(await meta);
+        const mapdata = JSON.parse(meta);
         if (mapdata.hasDate) {
             mapdata.dateRange.min = parseInt(mapdata.dateRange.min);
             mapdata.dateRange.max = parseInt(mapdata.dateRange.max);
@@ -349,7 +352,11 @@ export async function deleteAllProcessedMaps(): Promise<void> {
     const files = await readdir(getProcessedDir());
     const mapfiles = files.filter((f) => f.endsWith('.json'));
     await Promise.all(mapfiles.map(async (f) => {
-        await unlink(join(getProcessedDir(), f));
+        try {
+            await unlink(join(getProcessedDir(), f));
+        } catch (err) {
+            console.error(err);
+        }
     }));
 }
 
@@ -357,6 +364,10 @@ export async function deleteUploadedCSVs(): Promise<void> {
     const files = await readdir(getDataDir());
     const mapfiles = files.filter((f) => f.endsWith('.csv') && !f.startsWith('_'));
     await Promise.all(mapfiles.map(async (f) => {
-        await unlink(join(getDataDir(), f));
+        try {
+            await unlink(join(getDataDir(), f));
+        } catch (err) {
+            console.error(err);
+        }
     }));
 }

@@ -13,10 +13,19 @@ export async function load({ params }) {
         return {
             streamed: {
                 meta: new Promise<MapData>((resolve, reject) => {
-                    resolve(meta);
+                    try {
+                        resolve(meta);
+                    } catch (err) {
+                        reject(err);
+                    }
                 }),
                 pois: new Promise<MapDataPOI[]>((resolve, reject) => {
-                    resolve(pois);
+                    try {
+                        resolve(pois);
+                    } catch (err) {
+                        reject(err);
+                    }
+                    
                 }),
             }
         };

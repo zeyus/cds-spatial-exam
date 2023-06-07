@@ -1,25 +1,48 @@
 <script lang="ts">
-    import { Spinner } from 'flowbite-svelte';
+    import { Spinner, P, Heading, Button } from 'flowbite-svelte';
     import { pageName } from '$root/lib/stores.js';
-    export let data;
+	import { invalidate } from '$app/navigation';
+    import { enhance } from '$app/forms';
+    
     pageName.set("Reset Data");
     let done = false;
-    data.streamed.imported.then(() => {
-        done = true;
-    });
+    let started = false;
+    // data.streamed.imported.then(() => {
+    //     done = true;
+    // });
+    $: if (done) {
+        invalidate('data:foundmaps');
+        invalidate('/mapview');
+    }
 </script>
 
 
 <div class="page-content">
 {#if !done}
-    <h1>Resetting Data</h1>
-    <p>All map demos are being reset to their initial state.</p>
-        <div class="text-center"><Spinner size=128 /></div>
+    {#if !started}
+        <form
+        name="newdds"
+        method="post"
+        use:enhance={() => {
+            started = true;
+            return async ({ update }) => {
+                await update();
+                started = false;
+                done = true;
+            };
+        }}
+        enctype="multipart/form-data"
+        action="/reset?/go"><Button color="alternative" type="submit" class="mt-4">Reset</Button></form>  
+    {:else}
+        <Heading tag="h3">Resetting Data</Heading>
+        <P>All map demos are being reset to their initial state.</P>
+        <div class="text-center"><Spinner size=64 /></div>
+    {/if}
 {:else}
-    <h1>Data Reset!</h1>
-    <p>You're good to go. 😄</p>
+<Heading tag="h3">Data Reset!</Heading>
+    <P>You're good to go. 😄</P>
 {/if}
 
-<p>Click <a href="/mapview">here</a> to go back to the map view.</p>
-<p>Click <a href="/import">here</a> to import new data.</p>
+<P>Click <a href="/mapview">here</a> to go back to the map view.</P>
+<P>Click <a href="/import">here</a> to import new data.</P>
 </div>
