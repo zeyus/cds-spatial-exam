@@ -324,6 +324,17 @@ export async function loadMapDataPOIs(slug: string): Promise<MapDataPOI[]> {
     }
 }
 
+export async function streamMapDataPOIs(slug: string): Promise<Readable> {
+    const mapdatafile = join(getProcessedDir(), slug + '.json');
+    try {
+        const stream = createReadStream(mapdatafile, 'utf-8');
+        return stream;
+    } catch (err) {
+        return Promise.reject(err);
+    }
+}
+
+
 
 export function generateSlugFromTitle(title: string, maxlen: number = 50): string {
     // replace all non-alphanumeric characters with a dash

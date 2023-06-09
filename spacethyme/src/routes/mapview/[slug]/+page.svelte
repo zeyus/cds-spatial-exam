@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import type { ComponentType } from "svelte";
+    // import { streamArray } from "stream-json/streamers/StreamArray";
+    // import Parser from "stream-json";
     import { pageName } from '$root/lib/stores.js';
     import { Spinner, P } from 'flowbite-svelte';
     import { page } from "$app/stores";
@@ -15,6 +17,41 @@
     // Geomap component needs to be loaded asynchronously
     // to ensure the window object is available
     onMount(async () => {
+        fetch(`/api/maps/${slug}/data`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(async (response) => {
+            if (response.status !== 200) {
+                error = true;
+                return;
+            }
+            // const chain = new Chain([
+            //     response.body?.getReader(),
+            //     // streamArray.make(),
+            // ], {
+            //     packKeys: true,
+            //     packStrings: true,
+            //     packNumbers: true,
+            //     readableObjectMode: true,
+            //     writableObjectMode: false,
+            // });
+            // const asm = Asm.connectTo(chain);
+            // asm.on("done", (asm) => {
+            //     console.log(asm.current);
+            // });
+            
+        }).catch((err) => {
+            error = true;
+            console.log(err);
+        });
+        
+        // while (true) {
+        //     const { done, value } = await reader.read();
+        //     if (done) break;
+        //     console.log("val:", value);
+        // }
         try {
             Geomap = (await import("$root/components/Geomap.svelte")).default;
         } catch (e) {

@@ -10,10 +10,16 @@
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
     import 'leaflet-loading/src/Control.Loading.css';
+	import { onMount } from 'svelte';
 
 
     export let markers: Array<MapDataPOI> | Promise<Array<MapDataPOI>>;
     export let metadata: MapData | Promise<MapData>;
+
+    let mounted = false;
+    onMount(() => {
+        mounted = true;
+    });
 
     // Set initial map view location
     const initialView: LatLngExpression = {
@@ -218,6 +224,10 @@
         };
     }
 
+    function mapActionWrapper(container: HTMLElement) {
+        mapAction(container);
+    }
+
     // Handle window resize
     function resizeMap() {
         if(map) { map.invalidateSize(); }
@@ -364,5 +374,7 @@
 	} */
 
 </style>
-<div id="map" style="height:100%;width:100%" use:mapAction>
+{#if mounted}
+<div id="map" style="height:100%;width:100%" use:mapActionWrapper>
 </div>
+{/if}
