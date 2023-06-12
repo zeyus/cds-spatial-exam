@@ -12,7 +12,7 @@ It is the submission by [@zeyus](https://github.com/zeyus) and [@sashapustota](h
 
 ## Demo Version
 
-A demo version of the application is available at [https://spacethyme.zys.im/](https://spacethyme.zys.im/), this is mainly for previewing the application and the demonstration data. This server is reset at regular intervals and no uploaded data will be retained.
+A demo version of the application is available at [http://st.zys.im:40080/](http://st.zys.im:40080/), this is mainly for previewing the application and the demonstration data. This server is reset at regular intervals and no uploaded data will be retained.
 
 ## Installation
 
