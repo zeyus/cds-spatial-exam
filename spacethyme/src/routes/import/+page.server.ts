@@ -39,7 +39,6 @@ export const actions = {
     upload: async ({ cookies, request }) => {
         const formData = await request.formData();
         const dsfile = formData.get('dssrc') as File;
-        console.log(formData);
         const dsname = formData.get('dsname') as string;
         if (!dsname) {
             return fail(400, {
@@ -48,7 +47,6 @@ export const actions = {
                 dsname: null,
             });
         }
-        console.log(dsfile);
         if (!dsfile?.name || dsfile.name === 'undefined') {
             return fail(400, {
                 error: true,
@@ -76,9 +74,6 @@ export const actions = {
         const filename = await saveFormUpload(dsfile, slug);
 
         const csvHeader = await getCsvHeader(filename);
-        console.log(csvHeader);
-        console.log(slug);
-        console.log(filename);
 
         cookies.set('state', JSON.stringify({
             dsname: dsname,
@@ -103,7 +98,6 @@ export const actions = {
         const state = JSON.parse(formstate);
         // this function needs to be refactored, it's garbage
         const formData = await request.formData();
-        console.log(formData);
         const colmap = {
             lat: formData.get('lat') as string,
             lng: formData.get('lng') as string,
@@ -114,7 +108,6 @@ export const actions = {
             radius: formData.get('radius') as string,
             intensity: formData.get('intensity') as string,
         };
-        console.log("colmap:", colmap);
         // const filename = formData.get('filename') as string;
         // const dsname = formData.get('dsname') as string;
         // const slug = formData.get('slug') as string;
@@ -162,8 +155,6 @@ export const actions = {
         const colmapIntegers = colmapValues.map((v) => {
             return v === null || Number.isInteger(parseInt(v));
         });
-
-        console.log(colmapIntegers);
         
         if (!colmapIntegers.every((v) => v === true)) {
             return fail(400, {

@@ -16,8 +16,8 @@
     const requiredCols = {
         'lat': 'Latitude',
         'lng': 'Longitude',
-    }
-    
+    };
+
     const optionalCols = {
         label: 'Label',
         description: 'Description (per entry)',
@@ -25,11 +25,10 @@
         category: 'Category',
         radius: 'Radius',
         intensity: 'Intensity',
-    }
+    };
+
     $: if (data && data.state) {
-        
-        pushCols()
-        console.log("data", data);
+        pushCols();
     }
 
     function pushCols() {
@@ -39,8 +38,6 @@
             });
         }
     }
-
-
 </script>
 <div class="page-content">
     {#if creating}

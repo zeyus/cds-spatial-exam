@@ -265,9 +265,12 @@
                 addMarkers(map, markers);
             }
         } else {
-            console.log('No markers passed, loading from fetch function...');
-            addMarkers(map);
-
+            if (dataFunc !== undefined) {
+                console.log('No markers passed, loading from dataFunc...');
+                addMarkers(map);
+                return;
+            }
+            console.log('No markers or dataFunc passed, using default map.');
         }
         return {
             destroy: () => {
