@@ -6,15 +6,8 @@
     import { Map as MapIcon, HomeModern, CloudArrowUp, ArrowPath, CodeBracket } from 'svelte-heros-v2';
     import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Dropdown, DropdownItem, Span, Badge } from 'flowbite-svelte'
     import { page } from '$app/stores';
-  
-    import type { PageLoad } from './$types';
 	  import type { MapData } from '$root/lib/types';
     let availableMaps: Promise<MapData[]> | MapData[] | undefined;
-
-    export const load = (({ depends }) => {
-      depends('data:foundmaps');
-    }) satisfies PageLoad;
-
 
     onMount(() => {
        availableMaps = fetch('/api/maps', {
