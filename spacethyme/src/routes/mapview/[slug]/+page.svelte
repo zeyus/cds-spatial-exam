@@ -30,7 +30,12 @@
                 error = true;
                 return;
             }
-            mapMeta = await response.json();
+            const result = await response.json();
+            if (result?.error) {
+                error = true;
+                return;
+            }
+            mapMeta = result.meta;
             metaReady = true;
         }).catch((err) => {
             error = true;
