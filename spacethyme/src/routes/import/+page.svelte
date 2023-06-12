@@ -4,9 +4,10 @@
     import { Spinner } from 'flowbite-svelte';
     import { P, Input, Fileupload, Label, Helper, Heading, Button, Select, Textarea } from 'flowbite-svelte'
 	import { invalidate } from '$app/navigation';
+    import type { Column } from '$lib/types';
     export let data;
 	export let form;
-    let columns: Object[] = [];
+    let columns: Column[] = [];
     let creating = false;
 
     // export let data;

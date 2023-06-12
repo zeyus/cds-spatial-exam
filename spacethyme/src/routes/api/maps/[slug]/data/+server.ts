@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { MapData, MapDataPOI } from '$lib/types';
-import { loadMapMeta, streamMapDataPOIs } from '$lib/server/mapdata';
+import { streamMapDataPOIs } from '$lib/server/mapdata';
 import type { RequestHandler } from './$types';
 import type { Readable } from 'node:stream';
 

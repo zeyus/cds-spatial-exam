@@ -1,8 +1,9 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { saveFormUpload, generateSlugFromTitle, getCsvHeader, transformCsv } from '$lib/server/mapdata';
 import type { MapData, MapDataColumnIndex } from '$lib/types';
+import type { Actions, PageServerLoad } from './$types';
 
-export function load({ cookies }) {
+export const load = (async ({ cookies }) => {
     const formstate = cookies.get('state');
     if (!formstate) {
         cookies.set('state', JSON.stringify({}), {
@@ -24,7 +25,7 @@ export function load({ cookies }) {
             state: {},
         };
     }
-}
+}) satisfies PageServerLoad;
 
 
 export const actions = {
@@ -44,6 +45,7 @@ export const actions = {
             return fail(400, {
                 error: true,
                 message: 'No dataset name provided',
+                dsname: null,
             });
         }
         console.log(dsfile);
@@ -222,4 +224,4 @@ export const actions = {
         throw redirect(303, `/mapview/${state.slug}`);
     },
 
-};
+} satisfies Actions;

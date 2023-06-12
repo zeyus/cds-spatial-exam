@@ -1,23 +1,26 @@
 <script lang="ts">
+    //import { toNodeReadable } from 'web-streams-node';
+    
     import { onMount } from "svelte";
     import type { ComponentType } from "svelte";
-    // import { streamArray } from "stream-json/streamers/StreamArray";
-    // import Parser from "stream-json";
     import { pageName } from '$root/lib/stores.js';
     import { Spinner, P } from 'flowbite-svelte';
     import { page } from "$app/stores";
-	import type { MapData, MapDataPOI } from "$lib/types.js";
-    export let data;
+	import type { MapData, MapDataPOI } from "$root/lib/types.js";
 
     let slug = $page.params.slug ?? "";
     pageName.set(`🗺️ ${slug}`);
-    
+
     let Geomap: ComponentType;
     let error = false;
+    let getPOIs: CallableFunction;
+    let metaReady = false;
+    let mapMeta: MapData;
     // Geomap component needs to be loaded asynchronously
     // to ensure the window object is available
     onMount(async () => {
-        fetch(`/api/maps/${slug}/data`, {
+        // get map metadata frin API
+        fetch(`/api/maps/${slug}/meta`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -27,59 +30,66 @@
                 error = true;
                 return;
             }
-            // const chain = new Chain([
-            //     response.body?.getReader(),
-            //     // streamArray.make(),
-            // ], {
-            //     packKeys: true,
-            //     packStrings: true,
-            //     packNumbers: true,
-            //     readableObjectMode: true,
-            //     writableObjectMode: false,
-            // });
-            // const asm = Asm.connectTo(chain);
-            // asm.on("done", (asm) => {
-            //     console.log(asm.current);
-            // });
-            
+            mapMeta = await response.json();
+            metaReady = true;
         }).catch((err) => {
             error = true;
             console.log(err);
         });
-        
-        // while (true) {
-        //     const { done, value } = await reader.read();
-        //     if (done) break;
-        //     console.log("val:", value);
-        // }
+        // get map POIs
+        getPOIs = async (callback: CallableFunction, callbackdone: CallableFunction) => {
+            (await import('$lib/JSONStream.js')).default;
+            // @ts-ignore
+            let JSONStream = window.JSONStream;
+            fetch(`/api/maps/${slug}/data`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }).then(async (response) => {
+                if (response.status !== 200) {
+                    error = true;
+                    return;
+                }
+                //const nodeReadable = toNodeReadable(response.body);
+                const parser = JSONStream.parse('*');
+                const reader = response.body?.getReader()
+
+                if (!reader) {
+                    error = true;
+                    console.log("No reader");
+                    return;
+                }
+                parser.on('data', (data: MapDataPOI) => {
+                    callback(data);
+                });
+                parser.on('end', () => {
+                    console.log("end");
+                    callbackdone();
+                });
+                while (true) {
+                    
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        parser.end();
+                        break;
+                    } 
+                    console.log("write");
+                    parser.write(value);
+                }
+                
+            }).catch((err) => {
+                error = true;
+                console.log(err);
+            });
+        }
         try {
+            console.log("Loading Geomap");
             Geomap = (await import("$root/components/Geomap.svelte")).default;
         } catch (e) {
             error = true;
         }
-
     });
-    let metaReady = false;
-    let mapMeta: MapData
-    // let mapMarkers: MapDataPOI[]
-
-    data.streamed.meta.then((meta) => {
-        metaReady = true;
-        mapMeta = meta;
-        if (meta.name) {
-            pageName.set(`🗺️ ${meta.name}`);
-        }
-    }).catch((e) => {
-        console.log(e);
-        error = true;
-    })
-    // data.streamed.pois.then((pois) => {
-    //     markersReady = true;
-    //     mapMarkers = pois;
-    // });
-    
-
-    
 </script>
 {#if error}
     <div class="page-content">
@@ -94,7 +104,7 @@
         </div>
     </div>
     {:else}
-        <svelte:component this={Geomap} markers={data.streamed.pois} metadata={mapMeta} />
+        <svelte:component this={Geomap} dataFunc={getPOIs} metadata={mapMeta} />
     {/if}
 {/if}
 

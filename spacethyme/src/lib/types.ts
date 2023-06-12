@@ -78,4 +78,15 @@ interface MapDateRange {
     end: number | undefined;
 };
 
-export type {MapData, MapDataPOI, MapDataColumnIndex, MapDateRange};
+interface Column {
+    name: string;
+    index: number;
+};
+
+export type {
+    Column,
+    MapData,
+    MapDataPOI,
+    MapDataColumnIndex,
+    MapDateRange,
+};
