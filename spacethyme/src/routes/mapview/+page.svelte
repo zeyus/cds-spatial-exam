@@ -13,6 +13,7 @@
         try {
             Geomap = (await import("$root/components/Geomap.svelte")).default;
         } catch (e) {
+            console.error(e);
             error = true;
         }
     });

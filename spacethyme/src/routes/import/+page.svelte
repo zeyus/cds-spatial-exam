@@ -4,9 +4,10 @@
     import { Spinner } from 'flowbite-svelte';
     import { P, Input, Fileupload, Label, Helper, Heading, Button, Select, Textarea } from 'flowbite-svelte'
 	import { invalidate } from '$app/navigation';
+    import type { Column } from '$lib/types';
     export let data;
 	export let form;
-    let columns: Object[] = [];
+    let columns: Column[] = [];
     let creating = false;
 
     // export let data;
@@ -15,8 +16,8 @@
     const requiredCols = {
         'lat': 'Latitude',
         'lng': 'Longitude',
-    }
-    
+    };
+
     const optionalCols = {
         label: 'Label',
         description: 'Description (per entry)',
@@ -24,11 +25,10 @@
         category: 'Category',
         radius: 'Radius',
         intensity: 'Intensity',
-    }
+    };
+
     $: if (data && data.state) {
-        
-        pushCols()
-        console.log("data", data);
+        pushCols();
     }
 
     function pushCols() {
@@ -38,8 +38,6 @@
             });
         }
     }
-
-
 </script>
 <div class="page-content">
     {#if creating}

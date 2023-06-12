@@ -1,8 +1,9 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { saveFormUpload, generateSlugFromTitle, getCsvHeader, transformCsv } from '$lib/server/mapdata';
 import type { MapData, MapDataColumnIndex } from '$lib/types';
+import type { Actions, PageServerLoad } from './$types';
 
-export function load({ cookies }) {
+export const load = (async ({ cookies }) => {
     const formstate = cookies.get('state');
     if (!formstate) {
         cookies.set('state', JSON.stringify({}), {
@@ -24,7 +25,7 @@ export function load({ cookies }) {
             state: {},
         };
     }
-}
+}) satisfies PageServerLoad;
 
 
 export const actions = {
@@ -38,15 +39,14 @@ export const actions = {
     upload: async ({ cookies, request }) => {
         const formData = await request.formData();
         const dsfile = formData.get('dssrc') as File;
-        console.log(formData);
         const dsname = formData.get('dsname') as string;
         if (!dsname) {
             return fail(400, {
                 error: true,
                 message: 'No dataset name provided',
+                dsname: null,
             });
         }
-        console.log(dsfile);
         if (!dsfile?.name || dsfile.name === 'undefined') {
             return fail(400, {
                 error: true,
@@ -74,9 +74,6 @@ export const actions = {
         const filename = await saveFormUpload(dsfile, slug);
 
         const csvHeader = await getCsvHeader(filename);
-        console.log(csvHeader);
-        console.log(slug);
-        console.log(filename);
 
         cookies.set('state', JSON.stringify({
             dsname: dsname,
@@ -101,7 +98,6 @@ export const actions = {
         const state = JSON.parse(formstate);
         // this function needs to be refactored, it's garbage
         const formData = await request.formData();
-        console.log(formData);
         const colmap = {
             lat: formData.get('lat') as string,
             lng: formData.get('lng') as string,
@@ -112,7 +108,6 @@ export const actions = {
             radius: formData.get('radius') as string,
             intensity: formData.get('intensity') as string,
         };
-        console.log("colmap:", colmap);
         // const filename = formData.get('filename') as string;
         // const dsname = formData.get('dsname') as string;
         // const slug = formData.get('slug') as string;
@@ -160,8 +155,6 @@ export const actions = {
         const colmapIntegers = colmapValues.map((v) => {
             return v === null || Number.isInteger(parseInt(v));
         });
-
-        console.log(colmapIntegers);
         
         if (!colmapIntegers.every((v) => v === true)) {
             return fail(400, {
@@ -222,4 +215,4 @@ export const actions = {
         throw redirect(303, `/mapview/${state.slug}`);
     },
 
-};
+} satisfies Actions;

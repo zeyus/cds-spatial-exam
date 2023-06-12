@@ -1,0 +1,1 @@
+window.JSONStream = require('JSONStream');

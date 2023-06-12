@@ -1,17 +1,4 @@
-(function(factory) {
-  if (typeof define === "function" && define.amd) {
-    // AMD. Register as an anonymous module.
-    define([], factory);
-  } else if (typeof exports === "object") {
-    // Node/CommonJS
-    module.exports = factory();
-  } else {
-    // Browser globals
-    window.wNumb = factory();
-  }
-})(function() {
-  "use strict";
-
+// @ts-nocheck
   var FormatOptions = [
     "decimals",
     "thousand",
@@ -355,7 +342,7 @@
     return method.apply("", args);
   }
 
-  function wNumb(options) {
+  export default function wNumb(options) {
     if (!(this instanceof wNumb)) {
       return new wNumb(options);
     }
@@ -377,5 +364,3 @@
     };
   }
 
-  return wNumb;
-});
