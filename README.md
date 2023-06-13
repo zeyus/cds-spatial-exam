@@ -6,9 +6,21 @@ It is the submission by [@zeyus](https://github.com/zeyus) and [@sashapustota](h
 
 ## Features
 
+### Current
+
 - 🌍 **Map** - Visualize your data on a map, integrated by default with [OpenStreetMap](https://www.openstreetmap.org/) using [Leaflet](https://leafletjs.com/).
 - 🗃️ **Data** - Upload your data in CSV, TSV or JSON format and visualize it on the map.
-- 🗺️ **Vizualisation** - Data can be presented just as markers on the map, or can include a radius (KM) or intensity based on a numerical column (standardized during processing).
+- 🗺️ **Vizualisation** - Data can be presented as markers on the map.
+- 📅 **Filtering** - Data can be filtered by date.
+
+### Planned
+
+- 🗺️ **Vizualisation** - Data can be presented as heatmaps on the map.
+- 🗺️ **Vizualisation** - Customize radius, color, icon, etc. based on data.
+- 🗺️ **Vizualisation** - More informative map marker popouts.
+- 📶 **Data sources** Import JSON, GeoJSON, TSV, and more.
+- 📅 **Filtering** - Data can be filtered by category.
+
 
 ## Demo Version
 
@@ -104,7 +116,7 @@ Note: The column names do not have to match the ones specified above, but the da
 
 ### UI
 
-This project uses [SvelteKit](https://kit.svelte.dev/) as the framework for the web application. The application is written in [TypeScript](https://www.typescriptlang.org/). The UI is written in [Svelte](https://svelte.dev/), and uses the [Svelte Material UI](https://sveltematerialui.com/) component library.
+This project uses [SvelteKit](https://kit.svelte.dev/) as the framework for the web application. The application is written in [TypeScript](https://www.typescriptlang.org/). The UI is written in [Svelte](https://svelte.dev/), and uses the [Flowbite Svelte](https://flowbite-svelte.com/) component library.
 
 ### Map
 

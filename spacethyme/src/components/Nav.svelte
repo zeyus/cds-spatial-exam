@@ -1,5 +1,6 @@
 <script lang="ts">
     import { PUBLIC_SITE_NAME } from '$env/static/public';
+    import splitSiteName from '$lib/utils';
     import { pageName } from '$root/lib/stores.js';
     import { onMount } from 'svelte';
     import { DarkMode } from 'flowbite-svelte';
@@ -18,15 +19,7 @@
       }).then((response) => response.json());
     });
 
-    const siteNameParts = PUBLIC_SITE_NAME.split(" ");
-    let siteNamePrefix = '';
-    let siteNameSuffix = '';
-    let siteName = PUBLIC_SITE_NAME;
-    if (siteNameParts.length === 3) {
-      siteNamePrefix = siteNameParts[0];
-      siteName = siteNameParts[1];
-      siteNameSuffix = siteNameParts[2];
-    }
+    const siteNameParts = splitSiteName(PUBLIC_SITE_NAME);
     // $: menuTitle = $pageName != "" ? `${$pageName}` : PUBLIC_SITE_NAME;
     // List of navigation items
     const navItems = [
@@ -65,14 +58,13 @@
     }
 
   </script>
-
   <Navbar navClass="px-2 sm:px-4 py-0 w-full" let:hidden let:toggle>
     <NavBrand href="/">
-      {siteNamePrefix}
+      {siteNameParts.siteNamePrefix} 
       <Span gradient class="self-center text-xl font-semibold">
-        {siteName}
+        {siteNameParts.siteName}
       </Span>
-      {siteNameSuffix}
+      {siteNameParts.siteNameSuffix}
       {#if $pageName !== ""}
       <Badge class="text-xl font-semibold ml-2" >
         <Span class="self-center whitespace-nowrap text-s dark:text-white">
