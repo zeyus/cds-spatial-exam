@@ -1,6 +1,7 @@
 version: '3'
+name: spacethyme
 services:
-  spacethyme:
+  spacethyme-app:
     image: ghcr.io/zeyus/spacethyme:main
     ports:
       - 8080:8080
