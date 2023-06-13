@@ -4,7 +4,7 @@
     import { onMount } from 'svelte';
     import { DarkMode } from 'flowbite-svelte';
     import { Map as MapIcon, HomeModern, CloudArrowUp, ArrowPath, CodeBracket } from 'svelte-heros-v2';
-    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Dropdown, DropdownItem, Span, Badge } from 'flowbite-svelte'
+    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Dropdown, DropdownItem, Span, Badge, Button, Chevron } from 'flowbite-svelte'
     import { page } from '$app/stores';
 	  import type { MapData } from '$root/lib/types';
     let availableMaps: Promise<MapData[]> | MapData[] | undefined;
@@ -66,7 +66,7 @@
 
   </script>
 
-  <Navbar navClass="'px-2 sm:px-4 py-0 w-full" let:hidden let:toggle>
+  <Navbar navClass="px-2 sm:px-4 py-0 w-full" let:hidden let:toggle>
     <NavBrand href="/">
       {siteNamePrefix}
       <Span gradient class="self-center text-xl font-semibold">
@@ -91,17 +91,17 @@
             id="{item.id}"
             class="cursor-pointer">
               <span class="whitespace-nowrap">
-                <svelte:component this="{item.icon}" size=24 role="button" />
+                <Chevron placement="bottom" aligned={true}><svelte:component this="{item.icon}" size=24 role="button" /></Chevron>
                 {item.label}
               </span>
-          </NavLi>
-          <Dropdown frameClass="z-50" triggeredBy="#{item.id}">
-            {#each maps as map}
-              <DropdownItem href="/mapview/{map.slug}" active={$page.params.slug === map.slug}>
-                {map.label}
-              </DropdownItem>
-            {/each}
-          </Dropdown>
+            <Dropdown strategy="absolute" frameClass="z-40" triggeredBy="#{item.id}">
+              {#each maps as map}
+                <DropdownItem href="/mapview/{map.slug}" active={$page.params.slug === map.slug}>
+                  {map.label}
+                </DropdownItem>
+              {/each}
+            </Dropdown>
+        </NavLi>
 
         {:else}
           <NavLi
@@ -111,6 +111,7 @@
           </NavLi>
         {/if}
       {/each}
-      <DarkMode initialTheme='dark' />
+      <NavLi>
+      <DarkMode initialTheme='dark' /></NavLi>
     </NavUl>
   </Navbar>
