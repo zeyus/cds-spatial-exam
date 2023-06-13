@@ -9,7 +9,7 @@ It is the submission by [@zeyus](https://github.com/zeyus) and [@sashapustota](h
 ### Current
 
 - 🌍 **Map** - Visualize your data on a map, integrated by default with [OpenStreetMap](https://www.openstreetmap.org/) using [Leaflet](https://leafletjs.com/).
-- 🗃️ **Data** - Upload your data in CSV, TSV or JSON format and visualize it on the map.
+- 🗃️ **Data** - Upload your data in CSV format and visualize it on the map.
 - 🗺️ **Vizualisation** - Data can be presented as markers on the map.
 - 📅 **Filtering** - Data can be filtered by date.
 
