@@ -32,8 +32,20 @@ A demo version of the application is available at [http://st.zys.im:40080/](http
 
 The very easy way to get this running is via [Docker](https://www.docker.com/) (including Docker Desktop for Windows and OS-X). If you have Docker installed, you can use the latest built Docker image on the [Github Container Registry](https://github.com/zeyus/cds-spatial-exam/pkgs/container/cds-spatial-exam).
 
+Once you have Docker installed, you can use one of the following methods to run the application.
+#### Method 1: Docker Compose (Recommended)
 
-Once you have Docker installed, you can run the following command to start the application:
+If you have [Docker Compose](https://docs.docker.com/compose/) installed, you can use the following command to start the application:
+
+```bash
+docker compose up -d
+```
+
+Then 🗺️ spacethyme 🌍 is available at [http://localhost:8080](http://localhost:8080).
+
+**Note:** The configuration for docker compose is in the [`docker-compose.yml`](docker-compose.yml) file. You can modify this file if you would like to change the port the application is running on. By default it is `8080`. For example, you can change the line `ports: - "8080:8080"` to `ports: - "80:8080"` if you would like to run the application on port 80 (standard web http port).
+
+#### Method 2: Docker Run
 
 ```bash
 docker run -p 8080:8080 ghcr.io/zeyus/cds-spatial-exam:main

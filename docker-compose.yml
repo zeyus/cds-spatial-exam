@@ -1,9 +1,7 @@
 version: '3'
 services:
   spacethyme:
-    build:
-      context: .
-      dockerfile: Dockerfile 
+    image: ghcr.io/zeyus/spacethyme:main
     ports:
       - 8080:8080
     restart: unless-stopped
